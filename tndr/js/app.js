@@ -27,11 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Добавляем эффект блюра при скролле
     window.addEventListener('scroll', handleScroll);
     
-    // Добавляем инициализацию геймификации профиля при загрузке страницы
-    initProfileGameElements();
+    // Инициализация профиля сразу при загрузке, если мы уже на вкладке профиля
+    const profileTab = document.querySelector('.tab-item[data-target="profile"]');
+    if (profileTab && profileTab.classList.contains('active')) {
+        triggerProfileAnimations();
+    }
     
-    // Инициализация профиля, если мы на вкладке профиля
-    initializeProfile();
+    // Отладочное сообщение для подтверждения инициализации
+    console.log('Приложение инициализировано');
 });
 
 /**
@@ -282,6 +285,16 @@ function setupTabNavigation() {
             
             document.getElementById(targetId).classList.remove('hidden');
             document.getElementById(targetId).classList.add('active');
+            
+            // Если это вкладка профиля, запускаем анимации
+            if (targetId === 'profile') {
+                // Таймаут даёт время DOM обновиться перед запуском анимаций
+                setTimeout(() => {
+                    triggerProfileAnimations();
+                    // Отладочное сообщение
+                    console.log('Анимации профиля запущены');
+                }, 100);
+            }
         });
     });
 }
@@ -444,7 +457,7 @@ function initMockData() {
  * Показывает всплывающее уведомление
  * @param {string} message - Текст уведомления
  */
-function showNotification(message) {
+function showNotification(message, type = 'default') {
     // Проверяем, нет ли уже уведомления
     let notification = document.querySelector('.notification');
     if (notification) {
@@ -453,15 +466,15 @@ function showNotification(message) {
     
     // Создаем новое уведомление
     notification = document.createElement('div');
-    notification.className = 'notification';
+    notification.className = `notification ${type}`;
     notification.textContent = message;
     
     document.body.appendChild(notification);
     
-    // Добавляем стили через JavaScript, если их нет в CSS
-    if (!document.querySelector('style#notification-style')) {
+    // Добавляем стили для разных типов уведомлений, если их нет в CSS
+    if (!document.querySelector('style#notification-style-enhanced')) {
         const style = document.createElement('style');
-        style.id = 'notification-style';
+        style.id = 'notification-style-enhanced';
         style.textContent = `
             .notification {
                 position: fixed;
@@ -474,82 +487,39 @@ function showNotification(message) {
                 border-radius: 50px;
                 font-size: 14px;
                 z-index: 1000;
-                animation: fadeInOut 3s forwards;
+                animation: fadeInOutEnhanced 3s forwards;
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             }
             
-            @keyframes fadeInOut {
+            .notification.achievement {
+                background: linear-gradient(90deg, rgba(77, 159, 255, 0.9), rgba(117, 85, 255, 0.9));
+                border: 1px solid rgba(77, 159, 255, 0.5);
+                box-shadow: 0 5px 20px rgba(77, 159, 255, 0.3);
+                animation: achievementNotify 3s forwards;
+            }
+            
+            .notification.success {
+                background: linear-gradient(90deg, rgba(9, 230, 130, 0.9), rgba(34, 229, 221, 0.9));
+                border: 1px solid rgba(9, 230, 130, 0.5);
+                box-shadow: 0 5px 20px rgba(9, 230, 130, 0.3);
+            }
+            
+            @keyframes fadeInOutEnhanced {
                 0% { opacity: 0; transform: translate(-50%, 20px); }
                 10% { opacity: 1; transform: translate(-50%, 0); }
                 80% { opacity: 1; transform: translate(-50%, 0); }
                 100% { opacity: 0; transform: translate(-50%, -20px); }
             }
             
-            .match-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(10, 15, 30, 0.95);
-                backdrop-filter: blur(10px);
-                z-index: 2000;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                animation: fadeIn 0.5s forwards;
-                padding: 24px;
-            }
-            
-            .match-text {
-                font-size: 36px;
-                font-weight: bold;
-                margin-bottom: 20px;
-                background: var(--gradient-accent);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                text-fill-color: transparent;
-            }
-            
-            .match-description {
-                font-size: 16px;
-                margin-bottom: 30px;
-                text-align: center;
-                max-width: 80%;
-                line-height: 1.6;
-            }
-            
-            .match-buttons {
-                display: flex;
-                gap: 16px;
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            
-            .typing-dots span {
-                animation: typingDots 1.4s infinite both;
-            }
-            
-            .typing-dots span:nth-child(2) {
-                animation-delay: 0.2s;
-            }
-            
-            .typing-dots span:nth-child(3) {
-                animation-delay: 0.4s;
-            }
-            
-            @keyframes typingDots {
-                0% { opacity: 0.3; }
-                50% { opacity: 1; }
-                100% { opacity: 0.3; }
+            @keyframes achievementNotify {
+                0% { opacity: 0; transform: translate(-50%, 20px) scale(0.9); }
+                10% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+                20% { transform: translate(-50%, 0) scale(1.05); }
+                30% { transform: translate(-50%, 0) scale(1); }
+                80% { opacity: 1; transform: translate(-50%, 0); }
+                100% { opacity: 0; transform: translate(-50%, -20px); }
             }
         `;
         document.head.appendChild(style);
@@ -680,10 +650,10 @@ function setupAchievements() {
 }
 
 function updateGoalProgress() {
-    const goalElements = document.querySelectorAll('.goal-item');
+    const goalItems = document.querySelectorAll('.goal-item');
     
-    goalElements.forEach(goalItem => {
-        const progressBar = goalItem.querySelector('.goal-fill');
+    goalItems.forEach(item => {
+        const progressBar = item.querySelector('.goal-fill');
         if (progressBar) {
             // Эмуляция различного прогресса для разных целей
             const randomProgress = Math.floor(Math.random() * 100);
@@ -694,318 +664,14 @@ function updateGoalProgress() {
 
 function handleProfileAction(action) {
     switch (action) {
-        case 'settings':
-            showNotification('Настройки профиля скоро будут доступны');
-            break;
-        case 'stats':
-            showDetailedStats();
-            break;
-        default:
-            break;
-    }
-}
-
-function showDetailedStats() {
-    // Создаем модальное окно с детальной статистикой
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Подробная статистика</h3>
-                <button class="close-modal">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="stats-detail">
-                    <h4>Активность в тендерах</h4>
-                    <div class="stats-chart">
-                        <div class="chart-bar" style="height: 80%"><span>80%</span></div>
-                        <div class="chart-bar" style="height: 60%"><span>60%</span></div>
-                        <div class="chart-bar" style="height: 90%"><span>90%</span></div>
-                        <div class="chart-bar" style="height: 70%"><span>70%</span></div>
-                        <div class="chart-bar" style="height: 50%"><span>50%</span></div>
-                    </div>
-                    <div class="chart-labels">
-                        <span>Янв</span>
-                        <span>Фев</span>
-                        <span>Мар</span>
-                        <span>Апр</span>
-                        <span>Май</span>
-                    </div>
-                </div>
-                <div class="stats-badges">
-                    <h4>Ваши награды</h4>
-                    <div class="badges-grid">
-                        <div class="badge premium">Премиум</div>
-                        <div class="badge verified">Проверен</div>
-                        <div class="badge expert">Эксперт</div>
-                        <div class="badge mentor">Наставник</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Добавляем обработчик для закрытия модального окна
-    modal.querySelector('.close-modal').addEventListener('click', function() {
-        document.body.removeChild(modal);
-    });
-    
-    // Закрытие при клике вне содержимого
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            document.body.removeChild(modal);
-        }
-    });
-}
-
-// Добавляем функции для геймификации
-function updateExperiencePoints(points) {
-    const xpFill = document.querySelector('.xp-fill');
-    const xpText = document.querySelector('.xp-text');
-    
-    if (xpFill && xpText) {
-        // Получаем текущие значения XP
-        const currentXP = parseInt(xpText.textContent.split('/')[0].trim());
-        const maxXP = parseInt(xpText.textContent.split('/')[1].trim());
-        
-        // Обновляем XP
-        const newXP = Math.min(currentXP + points, maxXP);
-        const percentage = (newXP / maxXP) * 100;
-        
-        // Анимируем заполнение
-        xpFill.style.width = percentage + '%';
-        xpText.textContent = `${newXP}/${maxXP} XP`;
-        
-        // Показываем уведомление
-        showNotification(`+${points} XP получено!`, 'success');
-        
-        // Если достигнут максимум, можно выполнить повышение уровня
-        if (newXP >= maxXP) {
-            setTimeout(() => {
-                levelUp();
-            }, 1000);
-        }
-    }
-}
-
-function levelUp() {
-    const levelBadge = document.querySelector('.level-badge');
-    const xpText = document.querySelector('.xp-text');
-    
-    if (levelBadge && xpText) {
-        // Увеличиваем уровень
-        const currentLevel = parseInt(levelBadge.textContent);
-        levelBadge.textContent = currentLevel + 1;
-        
-        // Сбрасываем XP
-        const maxXP = parseInt(xpText.textContent.split('/')[1].trim());
-        const newMaxXP = maxXP + 500; // Увеличиваем требуемый XP для следующего уровня
-        
-        xpText.textContent = `0/${newMaxXP} XP`;
-        document.querySelector('.xp-fill').style.width = '0%';
-        
-        // Показываем уведомление о повышении уровня
-        showMatchOverlay(`Поздравляем! Вы достигли уровня ${currentLevel + 1}!`, 'Новые возможности разблокированы!');
-    }
-}
-
-function unlockAchievement(achievementId) {
-    const achievement = document.getElementById(achievementId);
-    
-    if (achievement && !achievement.classList.contains('unlocked')) {
-        achievement.classList.add('unlocked');
-        achievement.querySelector('.achievement-icon').classList.remove('locked');
-        
-        // Показываем уведомление
-        const title = achievement.querySelector('.achievement-title').textContent;
-        showNotification(`Достижение разблокировано: ${title}`, 'achievement');
-        
-        // Даем XP за достижение
-        updateExperiencePoints(100);
-    }
-}
-
-function updateSocialRating(change) {
-    const ratingValue = document.querySelector('.rating-value');
-    const ratingFill = document.querySelector('.rating-fill');
-    
-    if (ratingValue && ratingFill) {
-        const currentRating = parseInt(ratingValue.textContent);
-        const newRating = Math.max(0, Math.min(100, currentRating + change));
-        
-        ratingValue.textContent = newRating;
-        ratingFill.style.width = newRating + '%';
-        
-        // Обновляем описание в зависимости от рейтинга
-        const ratingDesc = document.querySelector('.rating-description');
-        if (ratingDesc) {
-            if (newRating < 30) {
-                ratingDesc.textContent = 'Начинающий';
-            } else if (newRating < 60) {
-                ratingDesc.textContent = 'Активный пользователь';
-            } else if (newRating < 85) {
-                ratingDesc.textContent = 'Эксперт';
-            } else {
-                ratingDesc.textContent = 'Лидер сообщества';
-            }
-        }
-        
-        // Показываем уведомление при значительном изменении
-        if (Math.abs(change) >= 5) {
-            const message = change > 0 ? 
-                `Социальный рейтинг увеличен (+${change})` : 
-                `Социальный рейтинг снижен (${change})`;
-            showNotification(message, change > 0 ? 'success' : 'warning');
-        }
-    }
-}
-
-function updateGoalProgress(goalId, progress) {
-    const goal = document.getElementById(goalId);
-    
-    if (goal) {
-        const progressElement = goal.querySelector('.goal-progress');
-        const fillElement = goal.querySelector('.goal-fill');
-        
-        if (progressElement && fillElement) {
-            // Получаем текущий прогресс
-            const current = parseInt(progressElement.textContent.split('/')[0].trim());
-            const max = parseInt(progressElement.textContent.split('/')[1].trim());
-            
-            // Обновляем прогресс
-            const newProgress = Math.min(current + progress, max);
-            const percentage = (newProgress / max) * 100;
-            
-            progressElement.textContent = `${newProgress}/${max}`;
-            fillElement.style.width = percentage + '%';
-            
-            // Если цель достигнута
-            if (newProgress >= max && current < max) {
-                showNotification('Цель выполнена!', 'success');
-                updateExperiencePoints(50);
-            }
-        }
-    }
-}
-
-// Инициализация модального окна статистики
-function initStatsModal() {
-    const statsButton = document.querySelector('.stats-button');
-    const statsModal = document.querySelector('.stats-modal');
-    const closeModal = document.querySelector('.close-modal');
-    
-    if (statsButton && statsModal && closeModal) {
-        statsButton.addEventListener('click', () => {
-            statsModal.classList.add('active');
-        });
-        
-        closeModal.addEventListener('click', () => {
-            statsModal.classList.remove('active');
-        });
-        
-        // Закрытие модального окна при клике вне содержимого
-        statsModal.addEventListener('click', (e) => {
-            if (e.target === statsModal) {
-                statsModal.classList.remove('active');
-            }
-        });
-    }
-}
-
-// Функция инициализации профиля для Telegram Mini App
-function initializeProfile() {
-    // Установка данных профиля только если находимся на вкладке профиля
-    const profileSection = document.getElementById('profile');
-    if (!profileSection || profileSection.classList.contains('hidden')) {
-        return; // Выходим, если не на странице профиля
-    }
-    
-    // Инициализация прогресс-баров
-    updateXPProgress();
-    updateSocialRating();
-    updateGoalProgress();
-    
-    // Привязка обработчиков к кнопкам действий
-    const profileButtons = document.querySelectorAll('.profile-button');
-    profileButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const action = this.getAttribute('data-action');
-            handleProfileAction(action);
-        });
-    });
-    
-    // Привязка обработчиков к достижениям
-    const achievementItems = document.querySelectorAll('.achievement-item');
-    achievementItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const name = this.querySelector('.achievement-name').textContent;
-            showNotification(`Достижение: ${name}`);
-        });
-    });
-}
-
-// Обновление прогресс-бара опыта
-function updateXPProgress() {
-    const xpFill = document.querySelector('.xp-fill');
-    const xpText = document.querySelector('.xp-text');
-    
-    if (xpFill && xpText) {
-        // Получаем текущие значения из текста (например, "650/1000")
-        const xpParts = xpText.textContent.split('/');
-        if (xpParts.length === 2) {
-            const currentXP = parseInt(xpParts[0]);
-            const maxXP = parseInt(xpParts[1]);
-            const percentage = Math.min(100, (currentXP / maxXP) * 100);
-            
-            // Устанавливаем ширину заполнения
-            xpFill.style.width = `${percentage}%`;
-        }
-    }
-}
-
-// Обновление социального рейтинга
-function updateSocialRating() {
-    const ratingFill = document.querySelector('.rating-fill');
-    const ratingValue = document.querySelector('.rating-value');
-    
-    if (ratingFill && ratingValue) {
-        // Получаем текущее значение из текста (например, "78/100")
-        const ratingParts = ratingValue.textContent.split('/');
-        if (ratingParts.length === 2) {
-            const currentRating = parseInt(ratingParts[0]);
-            const maxRating = parseInt(ratingParts[1]);
-            const percentage = Math.min(100, (currentRating / maxRating) * 100);
-            
-            // Устанавливаем ширину заполнения
-            ratingFill.style.width = `${percentage}%`;
-        }
-    }
-}
-
-// Обновление прогресса целей
-function updateGoalProgress() {
-    const goalItems = document.querySelectorAll('.goal-item');
-    
-    goalItems.forEach(item => {
-        const progressText = item.querySelector('.goal-progress');
-        const progressFill = item.querySelector('.goal-fill');
-        
-        if (progressText && progressFill && progressText.textContent.includes('%')) {
-            const percentage = parseInt(progressText.textContent);
-            if (!isNaN(percentage)) {
-                progressFill.style.width = `${percentage}%`;
-            }
-        }
-    });
-}
-
-// Обработка действий профиля
-function handleProfileAction(action) {
-    switch (action) {
         case 'share':
+            // Анимация кнопки
+            const shareButton = document.querySelector('.action-button[data-action="share"]');
+            if (shareButton) {
+                shareButton.classList.add('pulse-effect');
+                setTimeout(() => shareButton.classList.remove('pulse-effect'), 500);
+            }
+            
             // Для Telegram Mini App можно использовать Telegram API
             if (window.Telegram && window.Telegram.WebApp) {
                 try {
@@ -1018,28 +684,412 @@ function handleProfileAction(action) {
                         ]
                     }, function(buttonId) {
                         if (buttonId === 'share') {
-                            showNotification('Профиль скопирован для отправки');
+                            showNotification('Профиль скопирован для отправки', 'success');
+                            
+                            // Добавляем XP с анимацией
+                            const xpFill = document.querySelector('.xp-fill');
+                            const xpText = document.querySelector('.xp-text');
+                            
+                            if (xpFill && xpText) {
+                                const currentXP = parseInt(xpText.textContent.split('/')[0]);
+                                const maxXP = parseInt(xpText.textContent.split('/')[1]);
+                                const newXP = Math.min(currentXP + 10, maxXP);
+                                const percentage = (newXP / maxXP) * 100;
+                                
+                                xpFill.style.transition = 'width 0.5s ease';
+                                xpFill.style.width = `${percentage}%`;
+                                xpText.textContent = `${newXP}/${maxXP} XP`;
+                                
+                                // Анимация +XP над кнопкой
+                                const flyingXP = document.createElement('div');
+                                flyingXP.textContent = '+10 XP';
+                                flyingXP.style.position = 'absolute';
+                                flyingXP.style.top = `${shareButton.offsetTop}px`;
+                                flyingXP.style.left = `${shareButton.offsetLeft + shareButton.offsetWidth/2}px`;
+                                flyingXP.style.color = '#22e5dd';
+                                flyingXP.style.fontWeight = 'bold';
+                                flyingXP.style.zIndex = '100';
+                                flyingXP.style.transform = 'translateY(0)';
+                                flyingXP.style.opacity = '1';
+                                flyingXP.style.transition = 'all 1s ease';
+                                
+                                document.querySelector('.profile-container-minimal').appendChild(flyingXP);
+                                
+                                setTimeout(() => {
+                                    flyingXP.style.transform = 'translateY(-30px)';
+                                    flyingXP.style.opacity = '0';
+                                    setTimeout(() => flyingXP.remove(), 1000);
+                                }, 100);
+                            }
                         }
                     });
                 } catch (e) {
-                    showNotification('Профиль скопирован для отправки');
+                    showNotification('Профиль скопирован для отправки', 'success');
                 }
             } else {
-                showNotification('Профиль скопирован для отправки');
+                showNotification('Профиль скопирован для отправки', 'success');
             }
             break;
             
         case 'edit':
             showNotification('Редактирование профиля будет доступно в ближайшее время');
-            break;
             
-        case 'achievements':
-            showNotification('Полный список достижений будет доступен скоро');
+            // Эффект для аватара при клике на редактирование
+            const avatar = document.querySelector('.profile-avatar');
+            if (avatar) {
+                avatar.style.transition = 'all 0.3s ease';
+                avatar.style.boxShadow = '0 0 20px rgba(77, 159, 255, 0.8)';
+                avatar.style.transform = 'scale(1.05)';
+                
+                setTimeout(() => {
+                    avatar.style.boxShadow = '';
+                    avatar.style.transform = '';
+                }, 500);
+            }
             break;
             
         default:
             break;
     }
+}
+
+function showAchievementAnimation() {
+    const achievementsList = document.querySelector('.achievements-list');
+    const achievements = document.querySelectorAll('.achievement-item');
+    
+    // Анимируем каждое достижение по очереди
+    achievements.forEach((achievement, index) => {
+        setTimeout(() => {
+            achievement.style.transform = 'scale(1.1)';
+            
+            // Добавляем свечение для иконки
+            const icon = achievement.querySelector('.achievement-icon');
+            if (icon) {
+                icon.style.boxShadow = '0 0 20px rgba(77, 159, 255, 0.8)';
+            }
+            
+            // Возвращаем в нормальное состояние
+            setTimeout(() => {
+                achievement.style.transform = '';
+                if (icon) {
+                    icon.style.boxShadow = '';
+                }
+            }, 300);
+        }, index * 150);
+    });
+    
+    showNotification('Просмотр всех достижений будет доступен скоро');
+}
+
+function addExperiencePoints(points, showAnimation = false) {
+    const xpFill = document.querySelector('.xp-fill');
+    const xpText = document.querySelector('.xp-text');
+    
+    if (xpFill && xpText) {
+        // Получаем текущие значения
+        const xpParts = xpText.textContent.split('/');
+        if (xpParts.length === 2) {
+            const currentXP = parseInt(xpParts[0]);
+            const maxXP = parseInt(xpParts[1]);
+            
+            // Новый опыт с проверкой на превышение максимума
+            const newXP = Math.min(currentXP + points, maxXP);
+            const percentage = (newXP / maxXP) * 100;
+            
+            // Если нужна анимация, создаем летящий текст с XP
+            if (showAnimation) {
+                const flyingXP = document.createElement('div');
+                flyingXP.className = 'flying-xp';
+                flyingXP.textContent = `+${points} XP`;
+                document.body.appendChild(flyingXP);
+                
+                // Позиционируем летящий текст над иконкой профиля
+                const profileTab = document.querySelector('.tab-item[data-target="profile"]');
+                if (profileTab) {
+                    const rect = profileTab.getBoundingClientRect();
+                    flyingXP.style.left = `${rect.left + rect.width/2}px`;
+                    flyingXP.style.top = `${rect.top}px`;
+                    
+                    // Анимируем движение текста
+                    setTimeout(() => {
+                        flyingXP.style.opacity = '0';
+                        flyingXP.style.transform = 'translateY(-50px)';
+                        
+                        // Удаляем элемент после анимации
+                        setTimeout(() => {
+                            document.body.removeChild(flyingXP);
+                        }, 500);
+                    }, 100);
+                }
+            }
+            
+            // Добавляем стили для летящего XP, если их еще нет
+            if (!document.querySelector('style#flying-xp-style')) {
+                const style = document.createElement('style');
+                style.id = 'flying-xp-style';
+                style.textContent = `
+                    .flying-xp {
+                        position: fixed;
+                        transform: translateY(0);
+                        opacity: 1;
+                        color: #22e5dd;
+                        font-weight: bold;
+                        font-size: 16px;
+                        z-index: 9999;
+                        transition: all 0.5s ease-out;
+                        text-shadow: 0 0 5px rgba(34, 229, 221, 0.7);
+                    }
+                    
+                    .pulse-effect {
+                        animation: pulseButton 0.5s;
+                    }
+                    
+                    @keyframes pulseButton {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.05); }
+                        100% { transform: scale(1); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Анимируем заполнение
+            xpFill.style.transition = 'width 0.7s ease-in-out';
+            xpFill.style.width = `${percentage}%`;
+            
+            // Обновляем текст
+            xpText.textContent = `${newXP}/${maxXP} XP`;
+            
+            // Показываем уведомление
+            if (!showAnimation) {
+                showNotification(`+${points} XP получено!`);
+            }
+            
+            // Если достигнут максимум, можно выполнить повышение уровня
+            if (newXP >= maxXP) {
+                setTimeout(() => {
+                    levelUp();
+                }, 1000);
+            }
+        }
+    }
+}
+
+function levelUp() {
+    const levelBadge = document.querySelector('.level-badge');
+    const xpText = document.querySelector('.xp-text');
+    const xpFill = document.querySelector('.xp-fill');
+    
+    if (levelBadge && xpText && xpFill) {
+        // Получаем текущий уровень (например, из "Уровень 8")
+        const levelText = levelBadge.textContent;
+        const currentLevel = parseInt(levelText.replace(/\D/g, ''));
+        
+        if (!isNaN(currentLevel)) {
+            // Создаем яркий эффект для профиля
+            const profileContainer = document.querySelector('.profile-container');
+            if (profileContainer) {
+                profileContainer.style.boxShadow = '0 0 50px rgba(34, 229, 221, 0.5)';
+                setTimeout(() => {
+                    profileContainer.style.boxShadow = '';
+                }, 2000);
+            }
+            
+            // Увеличиваем уровень с эффектом
+            levelBadge.style.transform = 'scale(1.3)';
+            levelBadge.style.boxShadow = '0 0 30px rgba(77, 159, 255, 0.8)';
+            
+            setTimeout(() => {
+                // Увеличиваем уровень
+                const newLevel = currentLevel + 1;
+                levelBadge.textContent = `Уровень ${newLevel}`;
+                
+                // Сбрасываем XP
+                xpFill.style.transition = 'width 0.3s ease-in-out';
+                xpFill.style.width = '0%';
+                xpText.textContent = `0/1000 XP`;
+                
+                // Возвращаем стиль
+                setTimeout(() => {
+                    levelBadge.style.transform = '';
+                    levelBadge.style.boxShadow = '';
+                }, 300);
+                
+                // Показываем уведомление о повышении уровня
+                showNotification(`Поздравляем! Вы достигли уровня ${newLevel}!`);
+                
+                // Разблокируем новые функции уровня через уведомление
+                setTimeout(() => {
+                    showNotification('Разблокированы новые функции!');
+                }, 1500);
+            }, 800);
+        }
+    }
+}
+
+function unlockAchievement(name, description, icon, color) {
+    const achievementsList = document.querySelector('.achievements-list');
+    
+    if (achievementsList) {
+        // Создаем новый элемент достижения
+        const newAchievement = document.createElement('div');
+        newAchievement.className = 'achievement-item';
+        newAchievement.innerHTML = `
+            <div class="achievement-icon" style="background-color: ${color};">${icon}</div>
+            <div class="achievement-info">
+                <span class="achievement-name">${name}</span>
+                <span class="achievement-desc">${description}</span>
+            </div>
+        `;
+        
+        // Добавляем в список с эффектом появления
+        newAchievement.style.opacity = '0';
+        newAchievement.style.transform = 'translateY(20px)';
+        achievementsList.appendChild(newAchievement);
+        
+        // Анимируем появление
+        setTimeout(() => {
+            newAchievement.style.transition = 'all 0.5s ease';
+            newAchievement.style.opacity = '1';
+            newAchievement.style.transform = '';
+            
+            // Добавляем пульсацию
+            const icon = newAchievement.querySelector('.achievement-icon');
+            if (icon) {
+                icon.style.boxShadow = '0 0 30px rgba(77, 159, 255, 0.8)';
+                setTimeout(() => {
+                    icon.style.boxShadow = '';
+                }, 1500);
+            }
+        }, 100);
+        
+        // Показываем уведомление
+        showNotification(`Новое достижение: ${name}`, 'achievement');
+        
+        // Даем XP за достижение
+        addExperiencePoints(100, true);
+    }
+}
+
+// Устанавливает CSS-переменные для всех прогресс-баров
+function setProgressBarVariables() {
+    // Устанавливаем переменные для целей
+    const goalItems = document.querySelectorAll('.goal-item');
+    goalItems.forEach(item => {
+        const progressText = item.querySelector('.goal-progress');
+        const progressFill = item.querySelector('.goal-fill');
+        
+        if (progressText && progressFill && progressText.textContent.includes('%')) {
+            const percentage = parseInt(progressText.textContent);
+            if (!isNaN(percentage)) {
+                progressFill.style.setProperty('--goal-progress', `${percentage}%`);
+            }
+        }
+    });
+}
+
+// Анимация иконок достижений
+function animateAchievementIcons() {
+    const icons = document.querySelectorAll('.achievement-icon');
+    
+    // Устанавливаем разное время анимации для иконок
+    icons.forEach((icon, index) => {
+        const gradients = [
+            'linear-gradient(135deg, #FFD700, #FFA500)',
+            'linear-gradient(135deg, #C0C0C0, #A9A9A9)',
+            'linear-gradient(135deg, #CD7F32, #8B4513)',
+            'linear-gradient(135deg, #4d9fff, #7555ff)'
+        ];
+        
+        if (index < gradients.length) {
+            icon.style.backgroundImage = gradients[index];
+            icon.style.animationDelay = `${index * 0.2}s`;
+        }
+    });
+}
+
+// Анимация для элементов статистики
+function animateStatItems() {
+    const statItems = document.querySelectorAll('.stat-item');
+    
+    statItems.forEach((item, index) => {
+        // Добавляем задержку для последовательной анимации
+        setTimeout(() => {
+            item.style.transform = 'translateY(-5px)';
+            setTimeout(() => {
+                item.style.transform = '';
+            }, 300);
+        }, index * 200);
+    });
+}
+
+// Обновление прогресс-бара опыта с эффектами
+function updateXPProgress() {
+    const xpFill = document.querySelector('.xp-fill');
+    const xpText = document.querySelector('.xp-text');
+    
+    if (xpFill && xpText) {
+        // Получаем текущие значения из текста (например, "650/1000")
+        const xpParts = xpText.textContent.split('/');
+        if (xpParts.length === 2) {
+            const currentXP = parseInt(xpParts[0]);
+            const maxXP = parseInt(xpParts[1]);
+            const percentage = Math.min(100, (currentXP / maxXP) * 100);
+            
+            // Анимация заполнения
+            xpFill.style.width = '0%';
+            setTimeout(() => {
+                xpFill.style.transition = 'width 1s ease-in-out';
+                xpFill.style.width = `${percentage}%`;
+            }, 200);
+        }
+    }
+}
+
+// Обновление социального рейтинга с анимацией
+function updateSocialRating() {
+    const ratingFill = document.querySelector('.rating-fill');
+    const ratingValue = document.querySelector('.rating-value');
+    
+    if (ratingFill && ratingValue) {
+        // Получаем текущее значение из текста (например, "78/100")
+        const ratingParts = ratingValue.textContent.split('/');
+        if (ratingParts.length === 2) {
+            const currentRating = parseInt(ratingParts[0]);
+            const maxRating = parseInt(ratingParts[1]);
+            const percentage = Math.min(100, (currentRating / maxRating) * 100);
+            
+            // Анимация заполнения
+            ratingFill.style.width = '0%';
+            setTimeout(() => {
+                ratingFill.style.transition = 'width 1.2s ease-in-out';
+                ratingFill.style.width = `${percentage}%`;
+            }, 400);
+        }
+    }
+}
+
+// Обновление прогресса целей с анимацией
+function updateGoalProgress() {
+    const goalItems = document.querySelectorAll('.goal-item');
+    
+    goalItems.forEach((item, index) => {
+        const progressText = item.querySelector('.goal-progress');
+        const progressFill = item.querySelector('.goal-fill');
+        
+        if (progressText && progressFill && progressText.textContent.includes('%')) {
+            const percentage = parseInt(progressText.textContent);
+            if (!isNaN(percentage)) {
+                // Анимация заполнения с задержкой
+                progressFill.style.width = '0%';
+                setTimeout(() => {
+                    progressFill.style.transition = 'width 1s ease-in-out';
+                    progressFill.style.width = `${percentage}%`;
+                    progressFill.style.setProperty('--goal-progress', `${percentage}%`);
+                }, 600 + (index * 200));
+            }
+        }
+    });
 }
 
 // Добавление небольшой анимации при получении опыта
@@ -1143,11 +1193,190 @@ document.addEventListener('DOMContentLoaded', function() {
             if (targetId === 'profile') {
                 // Вызываем инициализацию с небольшой задержкой,
                 // чтобы профиль успел отобразиться
-                setTimeout(initializeProfile, 100);
+                setTimeout(triggerProfileAnimations, 100);
             }
         });
     });
     
     // Инициализируем профиль, если он открыт сразу
-    initializeProfile();
-}); 
+    const profileSection = document.getElementById('profile');
+    if (profileSection && !profileSection.classList.contains('hidden')) {
+        setTimeout(triggerProfileAnimations, 100);
+    }
+});
+
+/**
+ * Запускает все анимации профиля принудительно
+ */
+function triggerProfileAnimations() {
+    console.log('Запуск анимаций профиля');
+    
+    // Принудительно установить прогресс баров в ноль перед анимацией
+    const xpFill = document.querySelector('.xp-fill');
+    const ratingFill = document.querySelector('.rating-fill');
+    const goalFills = document.querySelectorAll('.goal-fill');
+    
+    if (xpFill) xpFill.style.width = '0%';
+    if (ratingFill) ratingFill.style.width = '0%';
+    goalFills.forEach(fill => fill.style.width = '0%');
+    
+    // Небольшая пауза для перерисовки DOM
+    setTimeout(() => {
+        // Анимация элементов профиля
+        animateProfileElements();
+        
+        // Добавление слушателей событий для кнопок профиля
+        setupProfileButtons();
+    }, 100);
+}
+
+/**
+ * Анимирует элементы профиля
+ */
+function animateProfileElements() {
+    // Анимация шапки профиля
+    const avatar = document.querySelector('.profile-avatar');
+    const profileName = document.querySelector('.profile-name');
+    const levelInfo = document.querySelector('.profile-level-info');
+    
+    if (avatar) {
+        avatar.style.opacity = '0';
+        avatar.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+            avatar.style.transition = 'all 0.5s ease';
+            avatar.style.opacity = '1';
+            avatar.style.transform = 'scale(1)';
+        }, 100);
+    }
+    
+    if (profileName) {
+        profileName.style.opacity = '0';
+        profileName.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+            profileName.style.transition = 'all 0.5s ease';
+            profileName.style.opacity = '1';
+            profileName.style.transform = 'translateY(0)';
+        }, 200);
+    }
+    
+    if (levelInfo) {
+        levelInfo.style.opacity = '0';
+        setTimeout(() => {
+            levelInfo.style.transition = 'all 0.5s ease';
+            levelInfo.style.opacity = '1';
+        }, 300);
+    }
+    
+    // Анимация XP бара
+    const xpFill = document.querySelector('.xp-fill');
+    if (xpFill) {
+        setTimeout(() => {
+            xpFill.style.transition = 'width 1s ease-out';
+            xpFill.style.width = '65%';
+        }, 500);
+    }
+    
+    // Анимация блоков контента
+    const statsCards = document.querySelectorAll('.profile-stats-card, .stat-card, .achievements-minimal');
+    statsCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 400 + (index * 100));
+    });
+    
+    // Анимация рейтинга
+    const ratingFill = document.querySelector('.rating-fill');
+    if (ratingFill) {
+        setTimeout(() => {
+            ratingFill.style.transition = 'width 1s ease-out';
+            ratingFill.style.width = '78%';
+        }, 600);
+    }
+    
+    // Анимация целей
+    const goalFills = document.querySelectorAll('.goal-fill');
+    goalFills.forEach((fill, index) => {
+        const width = fill.style.width || '0%';
+        fill.style.width = '0%';
+        setTimeout(() => {
+            fill.style.transition = 'width 0.8s ease-out';
+            fill.style.width = width;
+        }, 700 + (index * 150));
+    });
+    
+    // Анимация кнопок действий
+    const actionButtons = document.querySelectorAll('.action-button');
+    actionButtons.forEach((button, index) => {
+        button.style.opacity = '0';
+        button.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            button.style.transition = 'all 0.5s ease';
+            button.style.opacity = '1';
+            button.style.transform = 'translateY(0)';
+        }, 900 + (index * 100));
+    });
+    
+    // Анимация достижений (с задержкой)
+    setTimeout(() => {
+        const achievements = document.querySelectorAll('.achievements-minimal .achievement-item');
+        achievements.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(15px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.4s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    }, 800);
+}
+
+/**
+ * Устанавливает обработчики событий для элементов профиля
+ */
+function setupProfileButtons() {
+    // Очистка и добавление обработчиков для кнопок
+    const actionButtons = document.querySelectorAll('.action-button');
+    actionButtons.forEach(button => {
+        // Удаляем существующие обработчики
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // Добавляем новые обработчики
+        newButton.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            console.log('Кнопка нажата:', action);
+            
+            // Эффект нажатия
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => this.style.transform = '', 150);
+            
+            // Запуск соответствующего действия
+            handleProfileAction(action);
+        });
+    });
+    
+    // Обработчики для достижений
+    const achievementItems = document.querySelectorAll('.achievements-minimal .achievement-item');
+    achievementItems.forEach(item => {
+        // Клонируем элемент для очистки обработчиков
+        const newItem = item.cloneNode(true);
+        item.parentNode.replaceChild(newItem, item);
+        
+        // Добавляем новые обработчики
+        newItem.addEventListener('click', function() {
+            const achievementName = this.querySelector('span').textContent;
+            
+            // Эффект нажатия
+            this.style.transform = 'scale(1.1)';
+            setTimeout(() => this.style.transform = '', 300);
+            
+            // Показываем уведомление
+            showNotification(`Достижение: ${achievementName}`, 'achievement');
+        });
+    });
+} 

@@ -328,131 +328,124 @@
                 <div class="section-header">
                     <h1>Профиль</h1>
                 </div>
-                <div class="profile-container">
-                    <div class="profile-header">
-                        <img src="images/avatar.jpg" alt="Аватар пользователя" class="profile-avatar">
-                        <div class="profile-info">
+                <div class="profile-container-minimal">
+                    <!-- Шапка профиля -->
+                    <div class="profile-header-minimal">
+                        <div class="profile-avatar-wrap">
+                            <div class="profile-avatar">
+                                <img src="images/avatar.jpg" alt="Аватар пользователя">
+                            </div>
+                        </div>
+                        <div class="profile-main-info">
                             <h2 class="profile-name">Максим Иванов</h2>
-                            <div class="profile-level">
+                            <div class="profile-level-info">
                                 <span class="level-badge">Уровень 8</span>
-                                <div class="xp-bar">
-                                    <div class="xp-fill"></div>
+                                <div class="xp-container">
+                                    <div class="xp-bar">
+                                        <div class="xp-fill"></div>
+                                    </div>
+                                    <span class="xp-text">650/1000 XP</span>
                                 </div>
-                                <span class="xp-text">650/1000 XP</span>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="profile-content">
-                        <div class="profile-left-column">
-                            <!-- Социальный рейтинг -->
-                            <div class="profile-section">
-                                <h3>Социальный рейтинг</h3>
-                                <div class="social-rating">
-                                    <div class="rating-bar">
-                                        <div class="rating-fill"></div>
-                                    </div>
-                                    <span class="rating-value">78/100</span>
-                                </div>
+                    <!-- Основная информация профиля -->
+                    <div class="profile-content-minimal">
+                        <!-- Рейтинг и цели -->
+                        <div class="profile-stats-card">
+                            <div class="card-header">
+                                <span class="card-title">Социальный рейтинг</span>
+                                <span class="rating-value">78/100</span>
                             </div>
-                            
-                            <!-- Текущие цели -->
-                            <div class="profile-section">
-                                <h3>Текущие цели</h3>
-                                <div class="goals-list">
-                                    <div class="goal-item">
-                                        <div class="goal-info">
-                                            <span class="goal-name">Достичь 9 уровня</span>
-                                            <span class="goal-progress">30%</span>
-                                        </div>
-                                        <div class="goal-bar">
-                                            <div class="goal-fill" style="width: 30%"></div>
-                                        </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Текущие цели -->
+                        <div class="profile-stats-card">
+                            <div class="card-header">
+                                <span class="card-title">Прогресс</span>
+                            </div>
+                            <div class="goals-minimal">
+                                <div class="goal-minimal">
+                                    <div class="goal-info">
+                                        <span>Достичь 9 уровня</span>
+                                        <span>30%</span>
                                     </div>
-                                    <div class="goal-item">
-                                        <div class="goal-info">
-                                            <span class="goal-name">Помочь 50 пользователям</span>
-                                            <span class="goal-progress">80%</span>
-                                        </div>
-                                        <div class="goal-bar">
-                                            <div class="goal-fill" style="width: 80%"></div>
-                                        </div>
+                                    <div class="goal-bar"><div class="goal-fill" style="width:30%"></div></div>
+                                </div>
+                                <div class="goal-minimal">
+                                    <div class="goal-info">
+                                        <span>Помочь 50 пользователям</span>
+                                        <span>80%</span>
                                     </div>
-                                    <div class="goal-item">
-                                        <div class="goal-info">
-                                            <span class="goal-name">Выиграть 5 сложных дел</span>
-                                            <span class="goal-progress">50%</span>
-                                        </div>
-                                        <div class="goal-bar">
-                                            <div class="goal-fill" style="width: 50%"></div>
-                                        </div>
+                                    <div class="goal-bar"><div class="goal-fill" style="width:80%"></div></div>
+                                </div>
+                                <div class="goal-minimal">
+                                    <div class="goal-info">
+                                        <span>Выиграть 5 сложных дел</span>
+                                        <span>50%</span>
                                     </div>
+                                    <div class="goal-bar"><div class="goal-fill" style="width:50%"></div></div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="profile-right-column">
-                            <!-- Достижения -->
-                            <div class="profile-section">
-                                <h3>Достижения</h3>
-                                <div class="achievements-list">
-                                    <div class="achievement-item">
-                                        <div class="achievement-icon" style="background-color: #FFD700;">🏆</div>
-                                        <div class="achievement-info">
-                                            <span class="achievement-name">Первая победа</span>
-                                            <span class="achievement-desc">Выиграл первое дело</span>
-                                        </div>
-                                    </div>
-                                    <div class="achievement-item">
-                                        <div class="achievement-icon" style="background-color: #C0C0C0;">📚</div>
-                                        <div class="achievement-info">
-                                            <span class="achievement-name">Знаток законов</span>
-                                            <span class="achievement-desc">Изучил 50+ документов</span>
-                                        </div>
-                                    </div>
-                                    <div class="achievement-item">
-                                        <div class="achievement-icon" style="background-color: #CD7F32;">👨‍⚖️</div>
-                                        <div class="achievement-info">
-                                            <span class="achievement-name">Юрист-консультант</span>
-                                            <span class="achievement-desc">Помог 10+ клиентам</span>
-                                        </div>
-                                    </div>
-                                    <div class="achievement-item">
-                                        <div class="achievement-icon" style="background-color: #4d9fff;">🔍</div>
-                                        <div class="achievement-info">
-                                            <span class="achievement-name">Аналитик</span>
-                                            <span class="achievement-desc">Провёл 5+ анализов</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <!-- Краткая статистика -->
+                        <div class="stats-row">
+                            <div class="stat-card">
+                                <div class="stat-value">43</div>
+                                <div class="stat-label">Решено дел</div>
                             </div>
-                            
-                            <!-- Статистика сообщества -->
-                            <div class="profile-section">
-                                <h3>Статистика</h3>
-                                <div class="community-stats">
-                                    <div class="stat-item">
-                                        <span class="stat-value">43</span>
-                                        <span class="stat-label">Решено дел</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-value">127</span>
-                                        <span class="stat-label">Консультаций</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-value">86%</span>
-                                        <span class="stat-label">Рейтинг</span>
-                                    </div>
+                            <div class="stat-card">
+                                <div class="stat-value">127</div>
+                                <div class="stat-label">Консультаций</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">86%</div>
+                                <div class="stat-label">Рейтинг</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Достижения -->
+                        <div class="achievements-minimal">
+                            <div class="card-header">
+                                <span class="card-title">Достижения</span>
+                                <span class="card-action">Все</span>
+                            </div>
+                            <div class="achievements-scroll">
+                                <div class="achievement-item">
+                                    <div class="achievement-icon gold">🏆</div>
+                                    <span>Первая победа</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon silver">📚</div>
+                                    <span>Знаток законов</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon bronze">👨‍⚖️</div>
+                                    <span>Юрист-консультант</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon blue">🔍</div>
+                                    <span>Аналитик</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Кнопки действий -->
-                    <div class="profile-actions">
-                        <button class="profile-button" data-action="share">Поделиться</button>
-                        <button class="profile-button" data-action="edit">Редактировать</button>
-                        <button class="profile-button" data-action="achievements">Достижения</button>
+                    <div class="profile-actions-minimal">
+                        <button class="action-button" data-action="share">
+                            <span class="button-icon">↗️</span>
+                            <span>Поделиться</span>
+                        </button>
+                        <button class="action-button" data-action="edit">
+                            <span class="button-icon">✏️</span>
+                            <span>Редактировать</span>
+                        </button>
                     </div>
                 </div>
             </section>
