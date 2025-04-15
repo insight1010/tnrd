@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ТНДР - Умный помощник по тендерам</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Контент приложения -->
+        <main class="content">
+            <!-- Умный поиск -->
+            <section id="search" class="active">
+                <div class="section-header">
+                    <h1>Умный поиск</h1>
+                </div>
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" placeholder="Найдите подходящие тендеры...">
+                        <button class="search-button">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="filters">
+                        <button class="filter-btn active">Рекомендации ИИ</button>
+                        <button class="filter-btn">Новые</button>
+                        <button class="filter-btn">Популярные</button>
+                    </div>
+                </div>
+                <div class="tender-list">
+                    <div class="tender-card">
+                        <div class="tender-header">
+                            <span class="tag ai-match">95% соответствие</span>
+                            <span class="tag deadline">Осталось 3 дня</span>
+                        </div>
+                        <h3>Поставка компьютерного оборудования</h3>
+                        <p class="tender-details">Начальная цена: <strong>2,500,000 ₽</strong></p>
+                        <p class="tender-location">Москва</p>
+                        <div class="tender-footer">
+                            <button class="btn-primary">Подробнее</button>
+                            <button class="btn-secondary">Анализировать</button>
+                        </div>
+                    </div>
+                    <div class="tender-card">
+                        <div class="tender-header">
+                            <span class="tag ai-match">88% соответствие</span>
+                            <span class="tag deadline">Осталось 5 дней</span>
+                        </div>
+                        <h3>Техническое обслуживание автопарка</h3>
+                        <p class="tender-details">Начальная цена: <strong>1,800,000 ₽</strong></p>
+                        <p class="tender-location">Санкт-Петербург</p>
+                        <div class="tender-footer">
+                            <button class="btn-primary">Подробнее</button>
+                            <button class="btn-secondary">Анализировать</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="prediction-section">
+                    <h2>Прогноз тендеров</h2>
+                    <p>На основе анализа вашего профиля, ожидаются:</p>
+                    <div class="prediction-card">
+                        <div class="prediction-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="prediction-info">
+                            <h3>Строительные тендеры</h3>
+                            <p>Ожидается рост на 15% в следующем квартале</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Антикор -->
+            <section id="anticor" class="hidden">
+                <div class="section-header">
+                    <h1>Антикор</h1>
+                </div>
+                <div class="anticor-container">
+                    <div class="info-card">
+                        <h3>Анализ рисков</h3>
+                        <p>ИИ отслеживает подозрительные шаблоны в торгах и выявляет потенциальные риски.</p>
+                    </div>
+                    
+                    <div class="risk-analysis">
+                        <h2>Анализ тендера</h2>
+                        <div class="input-group">
+                            <input type="text" placeholder="Введите номер тендера...">
+                            <button class="btn-primary">Проверить</button>
+                        </div>
+                        
+                        <div class="risk-meter">
+                            <div class="meter-label">Риск манипуляции</div>
+                            <div class="meter">
+                                <div class="meter-value" style="width: 35%;"></div>
+                            </div>
+                            <div class="meter-scale">
+                                <span>Низкий</span>
+                                <span>Средний</span>
+                                <span>Высокий</span>
+                            </div>
+                        </div>
+                        
+                        <div class="risk-factors">
+                            <h3>Выявленные факторы</h3>
+                            <ul>
+                                <li>
+                                    <span class="risk-icon low"></span>
+                                    <span class="risk-text">Небольшое количество участников (3)</span>
+                                </li>
+                                <li>
+                                    <span class="risk-icon medium"></span>
+                                    <span class="risk-text">Сходство в документации участников</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ИИ Юрист -->
+            <section id="lawyer" class="hidden">
+                <div class="section-header">
+                    <h1>ИИ Юрист</h1>
+                </div>
+                <div class="lawyer-container">
+                    <div class="siri-interface">
+                        <div class="siri-orb-container">
+                            <div class="siri-orb">
+                                <div class="siri-orb-pulse"></div>
+                                <div class="siri-orb-waves"></div>
+                            </div>
+                            <div class="siri-status">Нажмите, чтобы активировать ИИ Юриста</div>
+                        </div>
+                        
+                        <div class="siri-conversation-container">
+                            <div class="siri-conversation">
+                                <div class="siri-message system">
+                                    <p>Добро пожаловать в ИИ Юрист. Чем я могу вам помочь?</p>
+                                </div>
+                                <!-- Здесь будут появляться новые сообщения -->
+                            </div>
+                        </div>
+                        
+                        <div class="siri-input-container">
+                            <input type="text" class="siri-text-input" placeholder="Введите ваш вопрос..." />
+                            <button class="siri-send-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Сообщество -->
+            <section id="community" class="hidden">
+                <div class="section-header">
+                    <h1>Сообщество</h1>
+                </div>
+                <div class="community-container">
+                    <div class="tabs">
+                        <button class="tab active">Товары</button>
+                        <button class="tab">Услуги</button>
+                        <button class="tab">Строительство</button>
+                        <button class="tab">ИТ</button>
+                    </div>
+                    
+                    <!-- Раздел Товары -->
+                    <div class="tab-content active">
+                        <div class="community-header">
+                            <h2>Группа "Товары"</h2>
+                            <div class="community-stats">
+                                <span>Участников: 238</span>
+                                <span>Обсуждений: 54</span>
+                            </div>
+                        </div>
+                        <div class="discussion-list">
+                            <div class="discussion-card">
+                                <div class="user-info">
+                                    <div class="user-avatar"></div>
+                                    <div class="user-details">
+                                        <h3>Александр Иванов</h3>
+                                        <span class="timestamp">3 часа назад</span>
+                                    </div>
+                                </div>
+                                <p class="discussion-text">Ищем поставщиков компьютерной техники для участия в тендере на 15 млн. Нужен опыт работы с госзаказами.</p>
+                                <div class="discussion-footer">
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 5L12 15M9 2H15M8 21H16M7 8H17C18.1046 8 19 8.89543 19 10V16C19 17.1046 18.1046 18 17 18H7C5.89543 18 5 17.1046 5 16V10C5 8.89543 5.89543 8 7 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>18</span>
+                                    </button>
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7 8H17M7 12H11M3 20.2895V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V15C21 16.1046 20.1046 17 19 17H7.96125C7.35368 17 6.77906 17.2762 6.39951 17.7506L4.06852 20.6643C3.79809 21.0114 3.3 20.8254 3.3 20.3876L3 20.2895Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>7</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Раздел Услуги -->
+                    <div class="tab-content hidden">
+                        <div class="community-header">
+                            <h2>Группа "Услуги"</h2>
+                            <div class="community-stats">
+                                <span>Участников: 156</span>
+                                <span>Обсуждений: 42</span>
+                            </div>
+                        </div>
+                        <div class="discussion-list">
+                            <div class="discussion-card">
+                                <div class="user-info">
+                                    <div class="user-avatar"></div>
+                                    <div class="user-details">
+                                        <h3>Елена Смирнова</h3>
+                                        <span class="timestamp">5 часов назад</span>
+                                    </div>
+                                </div>
+                                <p class="discussion-text">Объединяемся для участия в тендере на клининговые услуги в бюджетных учреждениях. Нужны партнеры с опытом.</p>
+                                <div class="discussion-footer">
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 5L12 15M9 2H15M8 21H16M7 8H17C18.1046 8 19 8.89543 19 10V16C19 17.1046 18.1046 18 17 18H7C5.89543 18 5 17.1046 5 16V10C5 8.89543 5.89543 8 7 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>8</span>
+                                    </button>
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7 8H17M7 12H11M3 20.2895V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V15C21 16.1046 20.1046 17 19 17H7.96125C7.35368 17 6.77906 17.2762 6.39951 17.7506L4.06852 20.6643C3.79809 21.0114 3.3 20.8254 3.3 20.3876L3 20.2895Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>4</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Раздел Строительство -->
+                    <div class="tab-content hidden">
+                        <div class="community-header">
+                            <h2>Группа "Строительство"</h2>
+                            <div class="community-stats">
+                                <span>Участников: 321</span>
+                                <span>Обсуждений: 78</span>
+                            </div>
+                        </div>
+                        <div class="discussion-list">
+                            <div class="discussion-card">
+                                <div class="user-info">
+                                    <div class="user-avatar"></div>
+                                    <div class="user-details">
+                                        <h3>Сергей Кузнецов</h3>
+                                        <span class="timestamp">Вчера</span>
+                                    </div>
+                                </div>
+                                <p class="discussion-text">Формируем консорциум для участия в тендере на строительство муниципального объекта. Бюджет 120 млн. Требуются партнеры с СРО.</p>
+                                <div class="discussion-footer">
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 5L12 15M9 2H15M8 21H16M7 8H17C18.1046 8 19 8.89543 19 10V16C19 17.1046 18.1046 18 17 18H7C5.89543 18 5 17.1046 5 16V10C5 8.89543 5.89543 8 7 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>22</span>
+                                    </button>
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7 8H17M7 12H11M3 20.2895V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V15C21 16.1046 20.1046 17 19 17H7.96125C7.35368 17 6.77906 17.2762 6.39951 17.7506L4.06852 20.6643C3.79809 21.0114 3.3 20.8254 3.3 20.3876L3 20.2895Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>11</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Раздел ИТ -->
+                    <div class="tab-content hidden">
+                        <div class="community-header">
+                            <h2>Группа "ИТ"</h2>
+                            <div class="community-stats">
+                                <span>Участников: 195</span>
+                                <span>Обсуждений: 63</span>
+                            </div>
+                        </div>
+                        <div class="discussion-list">
+                            <div class="discussion-card">
+                                <div class="user-info">
+                                    <div class="user-avatar"></div>
+                                    <div class="user-details">
+                                        <h3>Иван Петров</h3>
+                                        <span class="timestamp">2 часа назад</span>
+                                    </div>
+                                </div>
+                                <p class="discussion-text">Поделитесь опытом участия в тендерах по 223-ФЗ в сфере IT услуг. Какие документы нужно подготовить?</p>
+                                <div class="discussion-footer">
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 5L12 15M9 2H15M8 21H16M7 8H17C18.1046 8 19 8.89543 19 10V16C19 17.1046 18.1046 18 17 18H7C5.89543 18 5 17.1046 5 16V10C5 8.89543 5.89543 8 7 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>12</span>
+                                    </button>
+                                    <button class="btn-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7 8H17M7 12H11M3 20.2895V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V15C21 16.1046 20.1046 17 19 17H7.96125C7.35368 17 6.77906 17.2762 6.39951 17.7506L4.06852 20.6643C3.79809 21.0114 3.3 20.8254 3.3 20.3876L3 20.2895Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span>5</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Профиль -->
+            <section id="profile" class="hidden">
+                <div class="section-header">
+                    <h1>Профиль</h1>
+                </div>
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <img src="images/avatar.jpg" alt="Аватар пользователя" class="profile-avatar">
+                        <div class="profile-info">
+                            <h2 class="profile-name">Максим Иванов</h2>
+                            <div class="profile-level">
+                                <span class="level-badge">Уровень 8</span>
+                                <div class="xp-bar">
+                                    <div class="xp-fill"></div>
+                                </div>
+                                <span class="xp-text">650/1000 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <div class="profile-left-column">
+                            <!-- Социальный рейтинг -->
+                            <div class="profile-section">
+                                <h3>Социальный рейтинг</h3>
+                                <div class="social-rating">
+                                    <div class="rating-bar">
+                                        <div class="rating-fill"></div>
+                                    </div>
+                                    <span class="rating-value">78/100</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Текущие цели -->
+                            <div class="profile-section">
+                                <h3>Текущие цели</h3>
+                                <div class="goals-list">
+                                    <div class="goal-item">
+                                        <div class="goal-info">
+                                            <span class="goal-name">Достичь 9 уровня</span>
+                                            <span class="goal-progress">30%</span>
+                                        </div>
+                                        <div class="goal-bar">
+                                            <div class="goal-fill" style="width: 30%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="goal-item">
+                                        <div class="goal-info">
+                                            <span class="goal-name">Помочь 50 пользователям</span>
+                                            <span class="goal-progress">80%</span>
+                                        </div>
+                                        <div class="goal-bar">
+                                            <div class="goal-fill" style="width: 80%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="goal-item">
+                                        <div class="goal-info">
+                                            <span class="goal-name">Выиграть 5 сложных дел</span>
+                                            <span class="goal-progress">50%</span>
+                                        </div>
+                                        <div class="goal-bar">
+                                            <div class="goal-fill" style="width: 50%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-right-column">
+                            <!-- Достижения -->
+                            <div class="profile-section">
+                                <h3>Достижения</h3>
+                                <div class="achievements-list">
+                                    <div class="achievement-item">
+                                        <div class="achievement-icon" style="background-color: #FFD700;">🏆</div>
+                                        <div class="achievement-info">
+                                            <span class="achievement-name">Первая победа</span>
+                                            <span class="achievement-desc">Выиграл первое дело</span>
+                                        </div>
+                                    </div>
+                                    <div class="achievement-item">
+                                        <div class="achievement-icon" style="background-color: #C0C0C0;">📚</div>
+                                        <div class="achievement-info">
+                                            <span class="achievement-name">Знаток законов</span>
+                                            <span class="achievement-desc">Изучил 50+ документов</span>
+                                        </div>
+                                    </div>
+                                    <div class="achievement-item">
+                                        <div class="achievement-icon" style="background-color: #CD7F32;">👨‍⚖️</div>
+                                        <div class="achievement-info">
+                                            <span class="achievement-name">Юрист-консультант</span>
+                                            <span class="achievement-desc">Помог 10+ клиентам</span>
+                                        </div>
+                                    </div>
+                                    <div class="achievement-item">
+                                        <div class="achievement-icon" style="background-color: #4d9fff;">🔍</div>
+                                        <div class="achievement-info">
+                                            <span class="achievement-name">Аналитик</span>
+                                            <span class="achievement-desc">Провёл 5+ анализов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Статистика сообщества -->
+                            <div class="profile-section">
+                                <h3>Статистика</h3>
+                                <div class="community-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value">43</span>
+                                        <span class="stat-label">Решено дел</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value">127</span>
+                                        <span class="stat-label">Консультаций</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value">86%</span>
+                                        <span class="stat-label">Рейтинг</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопки действий -->
+                    <div class="profile-actions">
+                        <button class="profile-button" data-action="share">Поделиться</button>
+                        <button class="profile-button" data-action="edit">Редактировать</button>
+                        <button class="profile-button" data-action="achievements">Достижения</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Нижний таб-бар -->
+        <nav class="tab-bar">
+            <button class="tab-item active" data-target="search">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Поиск</span>
+            </button>
+            <button class="tab-item" data-target="anticor">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Антикор</span>
+            </button>
+            <button class="tab-item" data-target="lawyer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 18.5C15.5899 18.5 18.5 15.5899 18.5 12C18.5 8.41015 15.5899 5.5 12 5.5C8.41015 5.5 5.5 8.41015 5.5 12C5.5 15.5899 8.41015 18.5 12 18.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4.5 4.5L9 9M19.5 19.5L15 15M22 12H24M0 12H2M12 0V2M12 22V24M19.5 4.5L15 9M4.5 19.5L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>ИИ Юрист</span>
+            </button>
+            <button class="tab-item" data-target="community">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Сообщество</span>
+            </button>
+            <button class="tab-item" data-target="profile">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Профиль</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html> 
