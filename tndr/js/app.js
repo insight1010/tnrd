@@ -1,10 +1,113 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация Telegram WebApp
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Раскрываем на всю высоту
+// В самом начале файла, перед всем остальным кодом
+// Инициализация приложения в зависимости от среды
+let tg = window.Telegram && window.Telegram.WebApp;
+
+// Проверяем, запущено ли приложение в контексте Telegram
+if (tg) {
+    console.log('Запуск в Telegram Mini App');
+    // Расширяем на весь экран
+    tg.expand();
     
-    // Адаптация к цветовой теме Telegram
-    applyTelegramTheme();
+    // Показываем MainButton если приложение запущено в Telegram
+    tg.MainButton.text = "Открыть инструменты";
+    tg.MainButton.show();
+    
+    // Добавляем обработчик для MainButton
+    tg.MainButton.onClick(function() {
+        document.querySelector('.tab-item[data-target="anticor"]').click();
+        tg.MainButton.hide();
+    });
+    
+    // Уведомляем Telegram что приложение готово
+    tg.ready();
+} else {
+    // Если не запущено в Telegram, отображаем предупреждение
+    console.log('Запуск вне Telegram Mini App');
+    // Добавляем предупреждение, которое будет видно только вне TMA
+    document.addEventListener('DOMContentLoaded', function() {
+        const warning = document.createElement('div');
+        warning.className = 'telegram-warning';
+        warning.innerHTML = `
+            <div class="warning-content">
+                <h2>⚠️ Внимание</h2>
+                <p>Это приложение создано для использования в Telegram.</p>
+                <p>Некоторые функции могут работать некорректно вне платформы.</p>
+                <button id="close-warning">Понятно</button>
+            </div>
+        `;
+        document.body.appendChild(warning);
+        
+        // Добавляем стили для предупреждения
+        const style = document.createElement('style');
+        style.textContent = `
+            .telegram-warning {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 10000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                backdrop-filter: blur(5px);
+            }
+            .warning-content {
+                background: #222;
+                padding: 20px;
+                border-radius: 12px;
+                max-width: 80%;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+            .warning-content h2 {
+                margin-top: 0;
+                color: #ff9800;
+            }
+            .warning-content button {
+                margin-top: 15px;
+                padding: 8px 20px;
+                border: none;
+                border-radius: 6px;
+                background: #4d9fff;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Обработчик для кнопки "Понятно"
+        document.getElementById('close-warning').addEventListener('click', function() {
+            warning.style.display = 'none';
+        });
+    });
+}
+
+// Основной код инициализации приложения
+document.addEventListener('DOMContentLoaded', function() {
+    // Проверка на Telegram WebApp и инициализация
+    const isTelegramWebApp = window.Telegram && window.Telegram.WebApp;
+    
+    if (isTelegramWebApp) {
+        // Если это Telegram WebApp, инициализируем приложение
+        console.log('Telegram WebApp обнаружен, инициализация...');
+        
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Раскрываем на всю высоту
+        
+        // Адаптация к цветовой теме Telegram
+        applyTelegramTheme(tg);
+        
+        // Уведомляем Telegram, что приложение готово
+        tg.ready();
+    } else {
+        // Если открыто не в Telegram, показываем информацию о приложении
+        console.log('Приложение открыто вне Telegram, показываем превью');
+        showWebPreview();
+    }
     
     // Обработка навигации по таб-бару
     setupTabNavigation();
@@ -20,9 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Устанавливаем обработчики событий для элементов приложения
     setupEventListeners();
-    
-    // Уведомляем Telegram, что приложение готово
-    tg.ready();
     
     // Добавляем эффект блюра при скролле
     window.addEventListener('scroll', handleScroll);
@@ -64,10 +164,9 @@ function handleScroll() {
 
 /**
  * Применяет цветовую схему из Telegram WebApp к приложению
+ * @param {object} tg - Объект Telegram WebApp
  */
-function applyTelegramTheme() {
-    const tg = window.Telegram.WebApp;
-    
+function applyTelegramTheme(tg) {
     // Получаем цвета из Telegram и применяем их к CSS переменным
     document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#0c1221');
     document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#e6eaf2');
@@ -1379,4 +1478,98 @@ function setupProfileButtons() {
             showNotification(`Достижение: ${achievementName}`, 'achievement');
         });
     });
+}
+
+/**
+ * Показывает превью для веб-версии, открытой вне Telegram
+ */
+function showWebPreview() {
+    // Создаем оверлей для информации о запуске в Telegram
+    const previewOverlay = document.createElement('div');
+    previewOverlay.className = 'web-preview-overlay';
+    
+    previewOverlay.innerHTML = `
+        <div class="web-preview-content">
+            <img src="images/logo.png" alt="TNDR Logo" class="preview-logo">
+            <h1>TNDR - Телеграм Мини-Приложение</h1>
+            <p>Это приложение разработано для использования внутри Telegram и предоставляет доступ к умному поиску тендеров с рекомендациями от ИИ.</p>
+            <p>Чтобы использовать приложение, откройте его в Telegram.</p>
+            <a href="https://t.me/smartcontract44_bot/tender" class="preview-button">Открыть в Telegram</a>
+        </div>
+    `;
+    
+    document.body.appendChild(previewOverlay);
+    
+    // Добавляем стили для превью
+    const style = document.createElement('style');
+    style.textContent = `
+        .web-preview-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0c1221 0%, #162040 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .web-preview-content {
+            max-width: 500px;
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .preview-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            border-radius: 24px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .web-preview-content h1 {
+            margin-bottom: 20px;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .web-preview-content p {
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .preview-button {
+            display: inline-block;
+            background: linear-gradient(90deg, #4d9fff, #7555ff);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(77, 159, 255, 0.4);
+        }
+        
+        .preview-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(77, 159, 255, 0.6);
+        }
+    `;
+    
+    document.head.appendChild(style);
+    
+    // Скрываем основной контент приложения
+    document.querySelector('.app-container').style.display = 'none';
 } 

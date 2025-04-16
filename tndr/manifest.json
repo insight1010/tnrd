@@ -1,0 +1,25 @@
+{
+  "name": "TNDR - Умный помощник по тендерам",
+  "short_name": "TNDR",
+  "description": "Умный помощник по тендерам с рекомендациями от ИИ",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0c1221",
+  "theme_color": "#4d9fff",
+  "icons": [
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "telegram_web_app": {
+    "scope": "/tnrd/",
+    "bot_username": "smartcontract44_bot"
+  }
+} 
