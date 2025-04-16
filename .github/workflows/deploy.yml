@@ -28,14 +28,28 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
       
-      - name: Copy content from tndr directory to root
+      - name: Create deployment directory
         run: |
-          cp -r tndr/* .
+          mkdir -p deployment
+      
+      - name: Copy content from tndr directory
+        run: |
+          cp -r tndr/* deployment/
+      
+      - name: Fix directories and config
+        run: |
+          # Ensure the main.js and other files are in the root
+          cp -f tndr/js/app.js deployment/app.js || true
+          cp -f tndr/manifest.json deployment/manifest.json || true
+          # Make it more verbose to debug
+          ls -la deployment
+          echo "Content of deployment directory:"
+          find deployment -type f | sort
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: '.'
+          path: 'deployment'
       
       - name: Deploy to GitHub Pages
         id: deployment

@@ -1,6 +1,6 @@
 {
   "name": "TNDR - Умный помощник по тендерам",
-  "short_name": "TNDR",
+  "short_name": "tender",
   "description": "Умный помощник по тендерам с рекомендациями от ИИ",
   "start_url": "index.html",
   "display": "standalone",
