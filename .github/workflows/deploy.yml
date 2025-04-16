@@ -28,23 +28,43 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
       
-      - name: Create deployment directory
+      - name: Create clean deployment directory
         run: |
           mkdir -p deployment
       
-      - name: Copy content from tndr directory
+      - name: Copy all application files
         run: |
-          cp -r tndr/* deployment/
+          # Copy only the necessary files directly
+          cp tndr/index.html deployment/
+          mkdir -p deployment/css deployment/js deployment/images
+          cp tndr/css/*.css deployment/css/
+          cp tndr/js/*.js deployment/js/
+          
+          # Copy additional assets
+          if [ -d "tndr/images" ]; then
+            cp -r tndr/images/* deployment/images/
+          fi
+          
+          # Copy critical files to root
+          cp tndr/manifest.json deployment/
+          
+          # Remove unwanted files
+          rm -f deployment/README.md
       
-      - name: Fix directories and config
+      - name: Debug - List files in deployment
         run: |
-          # Ensure the main.js and other files are in the root
-          cp -f tndr/js/app.js deployment/app.js || true
-          cp -f tndr/manifest.json deployment/manifest.json || true
-          # Make it more verbose to debug
-          ls -la deployment
           echo "Content of deployment directory:"
           find deployment -type f | sort
+          
+          echo "Content of root HTML file:"
+          cat deployment/index.html | head -20
+      
+      - name: Setup index.html file
+        run: |
+          if [ ! -f "deployment/index.html" ]; then
+            echo "ERROR: index.html is missing in deployment directory!"
+            exit 1
+          fi
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
